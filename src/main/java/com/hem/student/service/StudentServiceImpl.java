@@ -10,11 +10,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.hem.student.dao.Student;
 import com.hem.student.dao.StudentDaoRepository;
 import com.hem.student.dto.StudentDto;
 
+@Service
 public class StudentServiceImpl implements StudentService {
 	
 	@Autowired
