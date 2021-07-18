@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,11 +28,16 @@ public class StudentController {
 		StudentDto idExist = studentService.getStudentById(studentDto.getStudentId());
 		ApplicationResponse applicationResponse = new ApplicationResponse();
 		if(idExist == null) {
-			studentService.insertStudent(studentDto);
-			applicationResponse.setCode(200);
-			applicationResponse.setStatus("created");
-			applicationResponse.setMessage("Student data inserted.");
-			return applicationResponse;
+			try {
+				studentService.insertStudent(studentDto);
+				applicationResponse.setCode(200);
+				applicationResponse.setStatus("created");
+				applicationResponse.setMessage("Student data inserted.");
+				return applicationResponse;
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
 		}
 		applicationResponse.setCode(400);
 		applicationResponse.setStatus("fail");
@@ -46,7 +52,7 @@ public class StudentController {
 			dto = studentService.getStudentById(id);
 		}
 		catch(Exception e) {
-			
+			System.out.println(e);
 		}
 		return dto;
 	}
@@ -74,9 +80,35 @@ public class StudentController {
 			
 		}
 		catch(Exception e) {
+			System.out.println(e);
 			applicationResponse.setCode(400);
  			applicationResponse.setStatus("fail");
  			applicationResponse.setMessage(e.getMessage());
+		}
+		return applicationResponse;
+	}
+	
+	@PutMapping("/update")
+	ApplicationResponse updateStudent(@RequestBody StudentDto studentDto) {
+		StudentDto idExist = studentService.getStudentById(studentDto.getStudentId());
+		ApplicationResponse applicationResponse = new ApplicationResponse();
+		if(idExist == null) {
+			applicationResponse.setCode(400);
+ 			applicationResponse.setStatus("fail");
+ 			applicationResponse.setMessage("Student with id "+studentDto.getStudentId()+ " does not exist.");
+ 			return applicationResponse;
+		}
+		try {
+			studentService.updateStudent(studentDto);
+			applicationResponse.setCode(200);
+			applicationResponse.setStatus("success");
+			applicationResponse.setMessage("Student data successfully updated.");
+		}
+		catch(Exception e) {
+			System.out.println(e);
+			applicationResponse.setCode(400);
+			applicationResponse.setStatus("fail");
+			applicationResponse.setMessage(e.getMessage());
 		}
 		return applicationResponse;
 	}
